@@ -1,0 +1,26 @@
+services:
+  puretidb:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: jdiaz
+      POSTGRES_PASSWORD: 123456Aa
+      POSTGRES_DB: medicamentos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+  puretiapp:
+    build: .
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "3002:3000"
+    depends_on:
+      - puretidb
+
+volumes:
+  postgres_data:
+

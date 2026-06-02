@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "tailwindcss";
+
+/* 
+   PASO CLAVE: Importamos Radix en una capa (layer) específica. 
+   Esto le baja la prioridad para que tus estilos ganen siempre.
+*/
+@import "@radix-ui/themes/styles.css" layer(radix-themes);
+
+@layer radix-themes {
+  /* Aquí puedes dejar que Radix cargue sus estilos normalmente */
+}
+
+@layer base {
+  /* 
+     Ahora sí, forzamos el color. 
+     Usamos '!important' o simplemente el selector de Radix 
+     porque ahora nuestra capa tiene más peso.
+  */
+  .rt-Link {
+    color: white !important;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .rt-Link:hover {
+    color: #d1d5db !important; /* gray-300 */
+  }
+}
+
