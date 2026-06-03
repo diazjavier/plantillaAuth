@@ -46,7 +46,6 @@ export default function GenericTable2<T extends Record<string, any>>({
         cell: (info) => {
           const value = info.getValue();
           const rowData = info.row.original;
-
           // Render de booleanos como íconos con tooltip
           if (col.booleanDisplay && typeof value === "boolean") {
             // const {
@@ -130,9 +129,25 @@ export default function GenericTable2<T extends Record<string, any>>({
                 <IconComponent className="w-5 h-5" />
               </button>
             );
-          } else if (col.dataType === "icon" && col.icon) {
+          }          
+          // Celda con Ícono + link
+          else if (col.dataType === "icon" && col.icon && col.linkPrefix) {
             const IconComponent = col.icon;
-            console.log("col.tooltip: ", col.tooltip);
+            const targetId = col.linkIdKey ? rowData[col.linkIdKey] : "";
+            return (
+              <Link
+                href={`${col.linkPrefix}${targetId}`}
+                //target="_blank"
+                className="text-blue-500 hover:text-blue-700 hover:bg-gray-100 transition-colors"
+                aria-label={col.header}
+              >
+                <IconComponent className="w-5 h-5" />
+              </Link>
+            );
+          }           
+          // Celda sólo Ícono
+          else if (col.dataType === "icon" && col.icon) {
+            const IconComponent = col.icon;
             return (
               <Tooltip content={col.tooltip || ""}>
                 <span className="cursor-help">
@@ -150,6 +165,19 @@ export default function GenericTable2<T extends Record<string, any>>({
             return (
               <Link
                 href={`${col.linkPrefix}${targetId}`}
+                target="_blank"
+                className="text-blue-500 hover:underline font-medium"
+              >
+                {String(value)}
+              </Link>
+            );
+          }
+
+          // Celda estructurada como email
+          if (col.dataType === "email") {
+            return (
+              <Link
+                href={`mailto:${value}`}
                 target="_blank"
                 className="text-blue-500 hover:underline font-medium"
               >

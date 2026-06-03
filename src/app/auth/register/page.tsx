@@ -9,7 +9,7 @@ function RegisterPage() {
         <Flex direction="column" gap="2" className="w-full md:w-1/3 items-center">
           <SignUpForm />
           <Container size="1" className="w-full">
-            <Flex justify="between" className="w-full p-4 text-sm">
+            <Flex justify="between" className="w-full p-2 text-sm">
               <Text>Ya tiene una cuenta?</Text>
               <Link asChild>
                 <NavLink href="/auth/login">Ingrese</NavLink>

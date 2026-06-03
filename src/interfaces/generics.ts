@@ -48,7 +48,7 @@ export interface ColumnConfig<T> {
   linkIdKey?: keyof T;  // Clave para armar la URL del link, ej: 'id'
   icon?: ComponentType<{ className?: string }>; // Componente de ícono (Radix, Lucide, etc.)
   action?: (row: T) => void; // Función callback para el click
-  dataType?: 'text' | 'number' | 'date' | 'money' | 'icon' | 'boolean' | 'state'; // Para formateo específico
+  dataType?: 'text' | 'number' | 'date' | 'money' | 'icon' | 'boolean' | 'state' | 'email'; // Para formateo específico
   textColor?: "ruby" | "blue" | "gray" | "gold" | "bronze" | "brown" | "yellow" | "amber" | "orange" | "tomato" | "red" | "crimson" | "pink" | "plum" | "purple" | "violet" | "iris" | "indigo" | "cyan" | "teal" | "jade" | "green" | "grass" | "lime" | "mint" | "sky"; // Para íconos, si quieres colores personalizados
   bgColor?: "ruby" | "blue" | "gray" | "gold" | "bronze" | "brown" | "yellow" | "amber" | "orange" | "tomato" | "red" | "crimson" | "pink" | "plum" | "purple" | "violet" | "iris" | "indigo" | "cyan" | "teal" | "jade" | "green" | "grass" | "lime" | "mint" | "sky"; // Para badges, si quieres colores personalizados
   booleanDisplay?: BooleanDisplayConfig; // Configuración para renderizado de booleanos como íconos

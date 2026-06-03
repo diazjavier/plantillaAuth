@@ -9,7 +9,7 @@ import {
   Button,
 } from "@radix-ui/themes";
 
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, CaretDownIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import NextLink from "next/link";
 import { useSession, signOut } from "next-auth/react";
@@ -51,6 +51,32 @@ function Navbar() {
                 <Link asChild color="gray">
                   <NextLink href="/aplicaciones">Aplicaciones</NextLink>
                 </Link>
+
+
+
+                {/* NUEVO DESPLEGABLE DE USUARIOS */}
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <button className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Usuarios
+                      <CaretDownIcon />
+                    </button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content className="!bg-[#042a57] !text-white border border-slate-700 hover:text-gray-300">
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/users2">Usuarios</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/roles">Roles</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/permisos">Permisos</NextLink>
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+
+
+
 
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
@@ -113,6 +139,23 @@ function Navbar() {
                     <DropdownMenu.Item asChild>
                       <NextLink href="/aplicaciones">Aplicaciones</NextLink>
                     </DropdownMenu.Item>
+
+
+                    {/* NUEVAS OPCIONES EN EL MENÚ MÓVIL */}
+                    <DropdownMenu.Separator />
+                    <div className="px-2 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Usuarios
+                    </div>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/users2">Usuarios</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/roles">Roles</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/permisos">Permisos</NextLink>
+                    </DropdownMenu.Item>
+
 
                     <DropdownMenu.Separator />
 

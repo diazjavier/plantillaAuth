@@ -39,7 +39,6 @@ function GenericTable({ datatable }: GenericDataTableProps) {
           {rows.map((item: GenericTableRow, index: number) => (
             <Table.Row key={index}>
               {item.row.map((cell: GenericTableCell, cellIndex: number) => {
-                console.log("cell.tooltip: ", cell.tooltip);
                 if(cell.tooltip && cell.tooltip !== "") {
                       return (
                   <Table.Cell key={cellIndex}>

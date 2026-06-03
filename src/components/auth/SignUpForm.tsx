@@ -49,16 +49,16 @@ function SignUpForm() {
       return;
     }
 
-    router.push("/");
+    router.push("/auth/users2");
   });
 
   return (
     <Card className="w-full">
-      <Heading size="6" className="mb-4 text-center p-4">
+      <Heading size="6" className="mb-2 text-center p-2">
         Sign Up
       </Heading>
       <form onSubmit={onSubmit}>
-        <Flex direction="column" gap="2" className="p-4 font-bold">
+        <Flex direction="column" gap="2" className="p-2 font-bold">
           <label htmlFor="user">Usuario</label>
           <Controller
             name="userName"
@@ -201,7 +201,7 @@ function SignUpForm() {
             justify="between"
             className="my-4 w-full"
           > */}
-          <Flex direction="column" className="my-4">
+          <Flex direction="column" className="my-2">
             <Button type="submit" className="w-100%">
               Sign Up
             </Button>

@@ -1,7 +1,6 @@
 "use client";
 import {
   AvatarIcon,
-  EnvelopeClosedIcon,
   LockClosedIcon,
 } from "@radix-ui/react-icons";
 import {
@@ -10,7 +9,6 @@ import {
   Flex,
   TextField,
   Button,
-  TextArea,
   Text,
 } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
