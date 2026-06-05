@@ -1,7 +1,7 @@
 // components/GenericTable.tsx
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   useReactTable,
@@ -18,11 +18,14 @@ import {
   ChevronUpIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
-  CrossCircledIcon,
-  CheckCircledIcon,
+
 } from "@radix-ui/react-icons";
-import { ColumnConfig, GenericTableProps2 } from "@/interfaces/generics";
-import { formatCurrency, formatDate, getBadgeColorClass } from "@/utils/functions";
+import { GenericTableProps2 } from "@/interfaces/generics"; 
+import {
+  formatCurrency,
+  formatDate,
+  getBadgeColorClass,
+} from "@/utils/functions";
 
 export default function GenericTable2<T extends Record<string, any>>({
   title,
@@ -46,17 +49,9 @@ export default function GenericTable2<T extends Record<string, any>>({
         cell: (info) => {
           const value = info.getValue();
           const rowData = info.row.original;
-          // Render de booleanos como íconos con tooltip
-          if (col.booleanDisplay && typeof value === "boolean") {
-            // const {
-            //   trueIcon = CheckCircledIcon,
-            //   falseIcon = CrossCircledIcon,
-            //   trueColor = "text-green-500",
-            //   falseColor = "text-red-500",
-            //   trueTooltip = "Sí",
-            //   falseTooltip = "No",
-            // } = col.booleanDisplay;
 
+          // Render de booleanos como íconos con tooltip
+          if (col.booleanIcon && typeof value === "boolean") {
             const {
               trueIcon,
               falseIcon,
@@ -64,17 +59,24 @@ export default function GenericTable2<T extends Record<string, any>>({
               falseColor,
               trueTooltip,
               falseTooltip,
-            } = col.booleanDisplay;
+              //iconRenderer,
+              action,
+            } = col.booleanIcon;
 
             const Icon = value ? trueIcon : falseIcon;
             const tooltip = value ? trueTooltip : falseTooltip;
             const color = value ? trueColor : falseColor;
+            // const IconComponent = iconRenderer ? iconRenderer({ rowData }) : Icon;
 
-            return (
+            return action ? (
               <Tooltip content={tooltip}>
-                <span>
+                <Button onClick={() => action?.(rowData)} variant="ghost" className="p-0">
                   <Icon className={`w-5 h-5 ${color}`} />
-                </span>
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip content={tooltip}>
+                <Icon className={`w-5 h-5 ${color}`} />
               </Tooltip>
             );
           }
@@ -90,9 +92,27 @@ export default function GenericTable2<T extends Record<string, any>>({
               falseTooltip,
             } = col.booleanBadge;
 
-            const label: string = value ? (trueLabel ? trueLabel : "") : (falseLabel ? falseLabel : "");
-            const color: string = value ? (trueColor ? trueColor : "") : (falseColor ? falseColor : "");
-            const tooltip: string = value ? (trueTooltip ? trueTooltip : "") : (falseTooltip ? falseTooltip : "");
+            const label: string = value
+              ? trueLabel
+                ? trueLabel
+                : ""
+              : falseLabel
+                ? falseLabel
+                : "";
+            const color: string = value
+              ? trueColor
+                ? trueColor
+                : ""
+              : falseColor
+                ? falseColor
+                : "";
+            const tooltip: string = value
+              ? trueTooltip
+                ? trueTooltip
+                : ""
+              : falseTooltip
+                ? falseTooltip
+                : "";
 
             const badge = (
               <span
@@ -101,8 +121,7 @@ export default function GenericTable2<T extends Record<string, any>>({
                 rounded-full
                 px-2 py-1
                 text-xs font-medium
-                ${getBadgeColorClass(color)}`
-            }
+                ${getBadgeColorClass(color)}`}
               >
                 {label}
               </span>
@@ -118,21 +137,21 @@ export default function GenericTable2<T extends Record<string, any>>({
           }
 
           // Celda con Ícono + Acción ejecutable
+          //          const IconComponent = col.iconRenderer ? col.iconRenderer({ rowData }) : col.icon;
+
           if (col.dataType === "icon" && col.icon && col.action) {
-            const IconComponent = col.icon;
             return (
               <button
                 onClick={() => col.action?.(rowData)}
                 className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-gray-100 transition-colors"
                 aria-label={col.header}
               >
-                <IconComponent className="w-5 h-5" />
+                <col.icon className="w-5 h-5" />
               </button>
             );
-          }          
+          }
           // Celda con Ícono + link
           else if (col.dataType === "icon" && col.icon && col.linkPrefix) {
-            const IconComponent = col.icon;
             const targetId = col.linkIdKey ? rowData[col.linkIdKey] : "";
             return (
               <Link
@@ -141,17 +160,16 @@ export default function GenericTable2<T extends Record<string, any>>({
                 className="text-blue-500 hover:text-blue-700 hover:bg-gray-100 transition-colors"
                 aria-label={col.header}
               >
-                <IconComponent className="w-5 h-5" />
+                <col.icon className="w-5 h-5" />
               </Link>
             );
-          }           
+          }
           // Celda sólo Ícono
           else if (col.dataType === "icon" && col.icon) {
-            const IconComponent = col.icon;
             return (
               <Tooltip content={col.tooltip || ""}>
                 <span className="cursor-help">
-                  <IconComponent
+                  <col.icon
                     className={`w-5 h-5 ${col.textColor ? `text-${col.textColor}-500` : ""} ${col.bgColor ? `bg-${col.bgColor}-100 p-1 rounded` : ""}`}
                   />
                 </span>

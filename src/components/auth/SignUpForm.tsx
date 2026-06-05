@@ -201,9 +201,13 @@ function SignUpForm() {
             justify="between"
             className="my-4 w-full"
           > */}
-          <Flex direction="column" className="my-2">
-            <Button type="submit" className="w-100%">
-              Sign Up
+          <Flex direction="row" justify="between" className="my-2 w-full">
+            <Button type="button" variant="solid" className="cursor-pointer text-white! bg-gray-400! hover:bg-gray-500! transition-colors w-32">
+              Cancelar
+            </Button>
+
+            <Button type="submit" className="cursor-pointer w-32">
+              Guardar
             </Button>
           </Flex>
           {/* <Flex direction="column" className="my-4 w-1/3">

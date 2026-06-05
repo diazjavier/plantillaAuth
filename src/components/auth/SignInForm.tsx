@@ -52,7 +52,7 @@ function SignInForm() {
 
   return (
     <Card className="w-full">
-      <Heading size="6" className="mb-4 text-center p-4">
+      <Heading size="6" className="mb-2 text-center p-2">
         Sign In
       </Heading>
       <form onSubmit={onSubmit}>

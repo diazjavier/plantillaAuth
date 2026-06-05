@@ -24,3 +24,11 @@ export function creaUsuario(user: User) {
 export function getUsuarioByName(userName: string) {
   return `select * from usuarios where userName = '${userName}';`;
 }
+
+export function inactivateUsuario(id: string) {
+  return `update usuarios set fechafin = now() where id = ${id} returning *;`;
+}
+
+export function activateUsuario(id: string) {
+  return `update usuarios set fechafin = null where id = ${id} returning *;`;
+}

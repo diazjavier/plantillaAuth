@@ -5,6 +5,7 @@ import "./globals.css";
 import "@radix-ui/themes/styles.css";
 import GlobalContextProvider from "@/context/globalContext";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <Theme>
             <Navbar />
             {children}
+            <Toaster position="top-right" richColors closeButton/>
           </Theme>
         </GlobalContextProvider>
       </body>
