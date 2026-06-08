@@ -5,7 +5,6 @@ import { getUsuariosDummy } from "@/utils/queries";
 export async function GET() {
 
     const query = getUsuariosDummy();
-          console.log("Usuarios obtenidos:", query);
     const response = await conn.query(query);
     if (response.rows.length === 0) {
         return NextResponse.json({ error: "No data available" }, { status: 401 });

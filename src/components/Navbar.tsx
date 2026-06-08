@@ -41,15 +41,15 @@ function Navbar() {
             {session && (
               <>
                 <Link asChild color="gray">
-                  <NextLink href="/productos">Productos</NextLink>
+                  <NextLink href="/pages/productos">Productos</NextLink>
                 </Link>
 
                 <Link asChild color="gray">
-                  <NextLink href="/clientes">Clientes</NextLink>
+                  <NextLink href="/pages/clientes">Clientes</NextLink>
                 </Link>
 
                 <Link asChild color="gray">
-                  <NextLink href="/aplicaciones">Aplicaciones</NextLink>
+                  <NextLink href="/pages/aplicaciones">Aplicaciones</NextLink>
                 </Link>
 
 
@@ -129,15 +129,15 @@ function Navbar() {
                 {session && (
                   <>
                     <DropdownMenu.Item asChild>
-                      <NextLink href="/productos">Productos</NextLink>
+                      <NextLink href="/pages/productos">Productos</NextLink>
                     </DropdownMenu.Item>
 
                     <DropdownMenu.Item asChild>
-                      <NextLink href="/clientes">Clientes</NextLink>
+                      <NextLink href="/pages/clientes">Clientes</NextLink>
                     </DropdownMenu.Item>
 
                     <DropdownMenu.Item asChild>
-                      <NextLink href="/aplicaciones">Aplicaciones</NextLink>
+                      <NextLink href="/pages/aplicaciones">Aplicaciones</NextLink>
                     </DropdownMenu.Item>
 
 

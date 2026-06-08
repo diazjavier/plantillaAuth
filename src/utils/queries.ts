@@ -25,10 +25,19 @@ export function getUsuarioByName(userName: string) {
   return `select * from usuarios where userName = '${userName}';`;
 }
 
+export function getUsuarioById(id: string) {
+  return `select * from usuarios where id = ${id};`;
+}
+
 export function inactivateUsuario(id: string) {
   return `update usuarios set fechafin = now() where id = ${id} returning *;`;
 }
 
 export function activateUsuario(id: string) {
   return `update usuarios set fechafin = null where id = ${id} returning *;`;
+}
+
+export function updateUsuario(id: string, user: User) {
+  const activo = user.activo ? "null" : "now()";
+  return `update usuarios set username = '${user.userName}', email = '${user.email}', comentario = '${user.comentario}', fechafin = ${activo} where id = ${id} returning *;`;
 }

@@ -1,8 +1,10 @@
 import { Container, Text, Flex } from "@radix-ui/themes";
 import SignUpForm from "@/components/auth/SignUpForm";
 import NavLink from "next/link";
+import { User } from "@/interfaces/auth";
 
-function RegisterPage() {
+
+async function RegisterPage() {
   return (
     <>
       <div className="flex h-screen w-full justify-center items-center m-2">

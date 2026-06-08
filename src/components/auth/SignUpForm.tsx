@@ -13,49 +13,84 @@ import {
   Button,
   TextArea,
   Text,
+  Switch,
 } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { useForm, Controller } from "react-hook-form";
+import { User } from "@/interfaces/auth";
 
-function SignUpForm() {
+interface UsuarioFormProps {
+  userData?: User;
+}
+
+function SignUpForm({ userData }: UsuarioFormProps) {
+  const isEdit = !!userData; // Si userData existe, estamos editando, de lo contrario, es un nuevo registro
+  const router = useRouter();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      userName: "",
-      email: "",
+      userName: userData?.userName || "",
+      email: userData?.email || "",
       password: "",
-      comentario: "",
+      comentario: userData?.comentario || "",
+      activo: userData?.activo || false,
     },
   });
-  const router = useRouter();
-  const onSubmit = handleSubmit(async (data) => {
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
 
-    const res = await response.json();
+  const onSubmit = handleSubmit(async (data: User) => {
+    if (isEdit) {
+      // Edita un usuario existente
+      const response = await fetch(`/api/auth/register/${userData?.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (response.status !== 201) {
-      // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-      console.log("Error al registrarse: ", res.error);
-      return;
+      const res = await response.json();
+
+      if (response.status !== 201) {
+        // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
+        console.log("Error al registrarse: ", res.error);
+        toast.error("Error al registrarse");
+        return;
+      }
+      toast.success("Usuario actualizado correctamente");
+      router.push("/auth/users2");
+    } else {
+      // Crea un nuevo usuario
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const res = await response.json();
+
+      if (response.status !== 201) {
+        // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
+        console.log("Error al registrarse: ", res.error);
+        toast.error("Error al registrarse");
+        return;
+      }
+      toast.success("Usuario creado correctamente");
+      router.push("/auth/users2");
     }
-
-    router.push("/auth/users2");
   });
 
   return (
     <Card className="w-full">
       <Heading size="6" className="mb-2 text-center p-2">
-        Sign Up
+        {isEdit ? `Editar usuario ${userData?.userName}` : "Nuevo usuario"}
       </Heading>
       <form onSubmit={onSubmit}>
         <Flex direction="column" gap="2" className="p-2 font-bold">
@@ -130,48 +165,51 @@ function SignUpForm() {
               {errors.email?.message?.toString()}
             </Text>
           )}
-
-          <label htmlFor="password">Password</label>
-          <Controller
-            name="password"
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: "El campo password es obligatorio",
-              },
-              minLength: {
-                value: 6,
-                message: "El largo mínimo de la contraseña es de 6 caracteres",
-              },
-            }}
-            render={({ field }) => {
-              return (
-                <TextField.Root
-                  id="password"
-                  type="password"
-                  placeholder="********"
-                  autoFocus={false}
-                  // defaultValue=""
-                  // value={field.value ?? ""}
-                  {...field}
-                  // onChange={field.onChange}
-                  // onBlur={field.onBlur}
-                  // ref={field.ref}
-                >
-                  <TextField.Slot>
-                    <LockClosedIcon height={16} width={16} />
-                  </TextField.Slot>
-                </TextField.Root>
-              );
-            }}
-          />
-          {errors.password?.message && (
-            <Text className="text-red-500 text-xs">
-              {errors.password?.message?.toString()}
-            </Text>
+          {!isEdit && (
+            <>
+              <label htmlFor="password">Password</label>
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: "El campo password es obligatorio",
+                  },
+                  minLength: {
+                    value: 6,
+                    message:
+                      "El largo mínimo de la contraseña es de 6 caracteres",
+                  },
+                }}
+                render={({ field }) => {
+                  return (
+                    <TextField.Root
+                      id="password"
+                      type="password"
+                      placeholder="********"
+                      autoFocus={false}
+                      // defaultValue=""
+                      // value={field.value ?? ""}
+                      {...field}
+                      // onChange={field.onChange}
+                      // onBlur={field.onBlur}
+                      // ref={field.ref}
+                    >
+                      <TextField.Slot>
+                        <LockClosedIcon height={16} width={16} />
+                      </TextField.Slot>
+                    </TextField.Root>
+                  );
+                }}
+              />
+              {errors.password?.message && (
+                <Text className="text-red-500 text-xs">
+                  {errors.password?.message?.toString()}
+                </Text>
+              )}
+            </>
           )}
-
           <label htmlFor="comentario">Comentario</label>
           <Controller
             name="comentario"
@@ -195,14 +233,33 @@ function SignUpForm() {
             }}
           />
 
-          {/* <Flex
-            direction="row"
-            gap="4"
-            justify="between"
-            className="my-4 w-full"
-          > */}
+          {/* NUEVO CONTROL: Switch para el estado Activo */}
+          {isEdit && (
+            <Flex direction="row" align="center" gap="3" className="my-2 p-1">
+              <Controller
+                name="activo"
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    id="activo"
+                    checked={field.value} // Sincroniza el booleano
+                    onCheckedChange={field.onChange} // Actualiza react-hook-form al hacer click
+                  />
+                )}
+              />
+              <label htmlFor="activo" className="cursor-pointer text-sm">
+                Usuario Activo
+              </label>
+            </Flex>
+          )}
+
           <Flex direction="row" justify="between" className="my-2 w-full">
-            <Button type="button" variant="solid" className="cursor-pointer text-white! bg-gray-400! hover:bg-gray-500! transition-colors w-32">
+            <Button
+              type="button"
+              variant="solid"
+              className="cursor-pointer text-white! bg-gray-400! hover:bg-gray-500! transition-colors w-32"
+              onClick={() => router.back()}
+            >
               Cancelar
             </Button>
 

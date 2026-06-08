@@ -220,7 +220,7 @@ export default function UsuariosPage() {
       sortable: false, // Bloquea el ordenamiento en esta columna
       icon: Pencil1Icon,
       //action: (usuario) => alert(`Editando a: ${usuario.id}`),
-      linkPrefix: "/auth/users2/", // Hace que el nombre sea un Link a /usuarios/[id]
+      linkPrefix: "/auth/register/", // Hace que el nombre sea un Link a /usuarios/[id]
       linkIdKey: "id",
     },
     {
