@@ -1,6 +1,5 @@
 "use client";
 
-import GenericTable from "@/components/GenericTable";
 import GenericTable2 from "@/components/GenericTable2";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import {

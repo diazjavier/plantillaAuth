@@ -82,3 +82,10 @@ export interface ConfirmDialogProps {
   confirmColor?: "red" | "blue" | "green" | "gray";
   onConfirm: () => void | Promise<void>;
 }
+
+export interface RolProps {
+    id?: number;
+    rol: string;
+    comentario: string;
+    activo?: boolean;
+}
