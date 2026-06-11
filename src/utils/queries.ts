@@ -1,18 +1,5 @@
 import { User } from "@/interfaces/auth";
-import { RolProps } from "@/interfaces/generics";
-
-// export function getUsuariosDummy() {
-// return  `select 
-// u.id 
-// , u.username as nombre
-// , u.email 
-// , r.id as idrol
-// , r.rol 
-// , u.createdat as fecharegistro
-// , case when (u.fechafin is null) then true else false end as activo
-// from usuarios u left join usuario_rol ur on u.id = ur.idusuario 
-// left join roles r on r.id  = ur.idrol ;`;
-// }
+import { RolProps, PermisoProps } from "@/interfaces/generics";
 
 export function getUsuariosDummy() {
 return  `select 
@@ -86,5 +73,29 @@ export function getRolesPorUsuario(idUser: string) {
   return `select ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id where ur.idusuario = ${idUser};`;
 }
 
+export function creaPermiso(permiso: PermisoProps) {
+  return `insert into permisos (permiso, comentario) values ('${permiso.permiso}', '${permiso.comentario}') RETURNING *;`;
+}
+
+export function getPermisoById(id: string) {
+  return `select * from permisos where id = ${id};`;
+}
+
+export function inactivatePermiso(id: string) {
+  return `update permisos set fechafin = now() where id = ${id} returning *;`;
+}
+
+export function activatePermiso(id: string) {
+  return `update permisos set fechafin = null where id = ${id} returning *;`;
+}
+
+export function updatePermiso(id: string, permiso: PermisoProps) {
+  const activo = permiso.activo ? "null" : "now()";
+  return `update permisos set rol = '${permiso.permiso}', comentario = '${permiso.comentario}',updatedat = now() , fechafin = ${activo} where id = ${id} returning *;`;
+}
+
+export function getPermisosCustom() {
+  return `select id, permiso, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from permisos;`;
+}
 
 

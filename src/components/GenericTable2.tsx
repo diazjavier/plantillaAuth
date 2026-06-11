@@ -18,12 +18,14 @@ import {
   MagnifyingGlassIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  DownloadIcon,
 } from "@radix-ui/react-icons";
 import { GenericTableProps2, ArrayBadgeConfig } from "@/interfaces/generics";
 import {
   getBadgeColorClass,
   formatDate,
   formatCurrency,
+  exportToExcel,
 } from "@/utils/functions";
 
 export default function GenericTable2<T extends Record<string, any>>({
@@ -102,8 +104,8 @@ export default function GenericTable2<T extends Record<string, any>>({
                   );
 
                   return tag.tooltip ? (
-                    <Tooltip content={tag.tooltip}>
-                      <span>{badge}</span>
+                    <Tooltip key={tag.text + "-" + index} content={tag.tooltip}>
+                      {badge}
                     </Tooltip>
                   ) : (
                     badge
@@ -276,6 +278,40 @@ export default function GenericTable2<T extends Record<string, any>>({
     initialState: { pagination: { pageSize: 5 } },
   });
 
+  // Función interna para procesar y limpiar las filas de la tabla antes de enviarlas a Excel
+  const handleExport = () => {
+    // Obtenemos solo las filas que pasaron el filtro actual del buscador
+    const filasFiltradas = table.getFilteredRowModel().rows.map((row) => {
+      const objetoOriginal = row.original;
+      const filaLimpia: Record<string, any> = {};
+
+      // Iteramos sobre la configuración de tus columnas para armar el Excel ordenado
+      columnsConfig.forEach((col) => {
+        // Ignoramos columnas de acciones o íconos que no tienen sentido en Excel
+        if (col.dataType === "icon" || col.accessorKey === "actions" || col.accessorKey === "activo2") return;
+
+        const valor = objetoOriginal[col.accessorKey as string];
+
+        // Si es tu columna de múltiples píldoras (roles), extraemos el texto separado por comas
+        if (col.dataType === "arrayText" && Array.isArray(valor)) {
+          filaLimpia[col.header] = valor.map((tag: any) => tag.text).join(", ");
+        } 
+        // Si es un booleano, lo guardamos como un texto limpio
+        else if (typeof valor === "boolean") {
+          filaLimpia[col.header] = valor ? "Sí" : "No";
+        } 
+        // Para cualquier otro dato plano (texto, fechas, emails, sueldos)
+        else if (valor !== undefined && valor !== null) {
+          filaLimpia[col.header] = valor;
+        }
+      });
+
+      return filaLimpia;
+    });
+    // Llamamos a la utilidad pasándole el título de la tabla como nombre de archivo
+    exportToExcel(filasFiltradas, title.toLowerCase().replace(/\s+/g, "_"));
+  };
+
   return (
     <Flex direction="column" gap="4" className="w-full">
       <h1 className="text-2xl font-bold mb-6 text-center">{title}</h1>
@@ -305,6 +341,15 @@ export default function GenericTable2<T extends Record<string, any>>({
             {newBoton.label}
           </Button>
         )}
+        <Button
+          variant="outline"
+          color="green"
+          onClick={handleExport}
+          className="cursor-pointer"
+          title="Exportar registros filtrados a Excel"
+        >
+          <DownloadIcon className="w-4 h-4 mr-1" />
+          </Button>
       </Flex>
 
       {/* Renderizado de la estructura de Radix UI */}

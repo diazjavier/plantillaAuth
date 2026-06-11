@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { creaRol } from "@/utils/queries";
 import { conn } from "@/utils/dbConnection";
+import { creaPermiso } from "@/utils/queries";
 
 export async function POST(request: Request) {
 
     const data = await request.json();
-    const query = creaRol(data);
+    const query = creaPermiso(data);
     const result = await conn.query(query);
-    const newRol = result.rows[0];
+    const newRow = result.rows[0];
 
-    return NextResponse.json(newRol, { status: 201 });
+    return NextResponse.json(newRow, { status: 201 });
 };

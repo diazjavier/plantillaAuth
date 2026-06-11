@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import * as XLSX from "xlsx";
 
 export function toUpper(txtMin: string | undefined) {
   if (txtMin) {
@@ -55,4 +56,18 @@ export function getBadgeColorClass(value: string): string {
     default:
       return "bg-gray-100 text-gray-800";
   }
+}
+
+export function exportToExcel(data: any[], fileName: string) {
+  // 1. Convertimos el array de objetos directamente a una hoja de trabajo (worksheet)
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  
+  // 2. Creamos un libro de trabajo (workbook) vacío
+  const workbook = XLSX.utils.book_new();
+  
+  // 3. Añadimos la hoja al libro con un nombre corto (máx 31 caracteres)
+  XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
+  
+  // 4. Generamos el archivo y disparamos la descarga en el navegador
+  XLSX.writeFile(workbook, `${fileName}.xlsx`);
 }

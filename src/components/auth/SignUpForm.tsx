@@ -58,7 +58,6 @@ function SignUpForm({ userData }: UsuarioFormProps) {
 
       if (response.status !== 201) {
         // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-        console.log("Error al registrarse: ", res.error);
         toast.error("Error al registrarse");
         return;
       }
@@ -78,7 +77,6 @@ function SignUpForm({ userData }: UsuarioFormProps) {
 
       if (response.status !== 201) {
         // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-        console.log("Error al registrarse: ", res.error);
         toast.error("Error al registrarse");
         return;
       }

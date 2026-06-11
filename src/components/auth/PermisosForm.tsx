@@ -14,14 +14,14 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useForm, Controller } from "react-hook-form";
-import { RolProps } from "@/interfaces/generics";
+import { PermisoProps } from "@/interfaces/generics";
 
-interface RolFormProps {
-  rolData?: RolProps;
+interface PermisoFormProps {
+  permisoData?: PermisoProps;
 }
 
-function RolesForm({ rolData }: RolFormProps) {
-  const isEdit = !!rolData; // Si userData existe, estamos editando, de lo contrario, es un nuevo registro
+function PermisosForm({ permisoData }: PermisoFormProps) {
+  const isEdit = !!permisoData; // Si userData existe, estamos editando, de lo contrario, es un nuevo registro
   const router = useRouter();
 
   const {
@@ -30,22 +30,25 @@ function RolesForm({ rolData }: RolFormProps) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      rol: rolData?.rol || "",
-      comentario: rolData?.comentario || "",
-      activo: rolData?.activo || false,
+      permiso: permisoData?.permiso || "",
+      comentario: permisoData?.comentario || "",
+      activo: permisoData?.activo || false,
     },
   });
 
-  const onSubmit = handleSubmit(async (data: RolProps) => {
+  const onSubmit = handleSubmit(async (data: PermisoProps) => {
     if (isEdit) {
-      // Edita un rol existente
-      const response = await fetch(`/api/auth/roles/register/${rolData?.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      // Edita un permiso existente
+      const response = await fetch(
+        `/api/auth/permisos/register/${permisoData?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       const res = await response.json();
 
@@ -54,11 +57,11 @@ function RolesForm({ rolData }: RolFormProps) {
         toast.error("Error al actualizar");
         return;
       }
-      toast.success("Rol actualizado correctamente");
-      router.push("/auth/roles");
+      toast.success("Permiso actualizado correctamente");
+      router.push("/auth/permisos");
     } else {
-      // Crea un nuevo rol
-      const response = await fetch("/api/auth/roles/register", {
+      // Crea un nuevo permiso
+      const response = await fetch("/api/auth/permisos/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,50 +73,50 @@ function RolesForm({ rolData }: RolFormProps) {
 
       if (response.status !== 201) {
         // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-        toast.error("Error al crear el Rol");
+        toast.error("Error al crear el Permiso");
         return;
       }
-      toast.success("Rol creado correctamente");
-      router.push("/auth/roles");
+      toast.success("Permiso creado correctamente");
+      router.push("/auth/permisos");
     }
   });
 
   return (
     <Card className="w-full">
       <Heading size="6" className="mb-2 text-center p-2">
-        {isEdit ? `Editar rol ${rolData?.rol}` : "Nuevo Rol"}
+        {isEdit ? `Editar Permiso ${permisoData?.permiso}` : "Nuevo Permiso"}
       </Heading>
       <form onSubmit={onSubmit}>
         <Flex direction="column" gap="2" className="p-2 font-bold">
-          <label htmlFor="rol">Rol</label>
+          <label htmlFor="permiso">Permiso</label>
           <Controller
-            name="rol"
+            name="permiso"
             control={control}
             rules={{
               required: {
                 value: true,
-                message: "El campo Rol es obligatorio",
+                message: "El campo Permiso es obligatorio",
               },
               minLength: {
                 value: 3,
-                message: "El largo mínimo del Rol es de 3 caracteres",
+                message: "El largo mínimo del Permiso es de 3 caracteres",
               },
             }}
             render={({ field }) => {
               return (
                 <TextField.Root
-                  id="rol"
+                  id="permiso"
                   type="text"
-                  placeholder="Rol"
+                  placeholder="Permiso"
                   autoFocus={true}
                   {...field}
                 ></TextField.Root>
               );
             }}
           />
-          {errors.rol?.message && (
+          {errors.permiso?.message && (
             <Text className="text-red-500 text-xs">
-              {errors.rol?.message?.toString()}
+              {errors.permiso?.message?.toString()}
             </Text>
           )}
 
@@ -154,7 +157,7 @@ function RolesForm({ rolData }: RolFormProps) {
                       onCheckedChange={field.onChange} // Actualiza react-hook-form al hacer click
                     />
                     <label htmlFor="activo" className="cursor-pointer text-sm">
-                      {field.value ? "Rol Activo" : "Rol Inactivo"}
+                      {field.value ? "Permiso Activo" : "Permiso Inactivo"}
                     </label>
                   </>
                 )}
@@ -186,4 +189,4 @@ function RolesForm({ rolData }: RolFormProps) {
   );
 }
 
-export default RolesForm;
+export default PermisosForm;

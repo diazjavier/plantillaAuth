@@ -96,3 +96,13 @@ export interface RolProps {
     comentario: string;
     activo?: boolean;
 }
+
+export interface PermisoProps {
+    id?: number;
+    permiso: string;
+    comentario: string;
+    activo?: boolean;
+}
+
+
+

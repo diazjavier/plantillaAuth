@@ -136,8 +136,6 @@ export default function UsuariosPage() {
           (nombreRol: string) => {return getBadgeConfig(nombreRol)},
         );
 
-        console.log("rolesEstructurados: ", rolesEstructurados);
-
         return {
           id: item.id,
           nombre: item.nombre,
@@ -173,7 +171,6 @@ export default function UsuariosPage() {
 
   const fetchUsuarios = async () => {
     const usuariosData = await listaUsuarios();
-    console.log("Usuarios: ", usuariosData);
     setUsuarios(usuariosData);
   };
 
