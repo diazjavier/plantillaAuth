@@ -1,17 +1,27 @@
 import { User } from "@/interfaces/auth";
 import { RolProps } from "@/interfaces/generics";
 
+// export function getUsuariosDummy() {
+// return  `select 
+// u.id 
+// , u.username as nombre
+// , u.email 
+// , r.id as idrol
+// , r.rol 
+// , u.createdat as fecharegistro
+// , case when (u.fechafin is null) then true else false end as activo
+// from usuarios u left join usuario_rol ur on u.id = ur.idusuario 
+// left join roles r on r.id  = ur.idrol ;`;
+// }
+
 export function getUsuariosDummy() {
 return  `select 
 u.id 
 , u.username as nombre
 , u.email 
-, r.id as idrol
-, r.rol 
 , u.createdat as fecharegistro
 , case when (u.fechafin is null) then true else false end as activo
-from usuarios u left join usuario_rol ur on u.id = ur.idusuario 
-left join roles r on r.id  = ur.idrol ;`;
+from usuarios u;`;
 }
 
 export function getUsuarios() {
@@ -67,5 +77,14 @@ export function updateRol(id: string, rol: RolProps) {
 export function getRolesCustom() {
   return `select id, rol, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from roles;`;
 }
+
+export function getUsuariosRoles() {
+  return `select ur.idusuario, ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id;`;
+}
+
+export function getRolesPorUsuario(idUser: string) {
+  return `select ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id where ur.idusuario = ${idUser};`;
+}
+
 
 

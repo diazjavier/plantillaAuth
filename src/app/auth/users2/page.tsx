@@ -7,6 +7,7 @@ import {
   GenericButton,
   GenericTableProps2,
   ConfirmDialogProps,
+  ArrayBadgeConfig,
 } from "@/interfaces/generics";
 import {
   Pencil1Icon,
@@ -25,7 +26,7 @@ interface Usuario {
   id: string;
   nombre: string;
   email: string;
-  rol: string;
+  rol: ArrayBadgeConfig[];
   //sueldo: number;
   fecharegistro: string;
   activo?: boolean; // Para ícono de estado activo/inactivo
@@ -128,15 +129,25 @@ export default function UsuariosPage() {
     try {
       const res = await fetch("/api/auth/usuarios");
       const data = await res.json();
-      const usuarios: Usuario[] = data.data.map((item: any) => ({
-        id: item.id,
-        nombre: item.nombre,
-        email: item.email,
-        rol: item.rol,
-        fecharegistro: item.fecharegistro,
-        activo: item.activo, // Asegúrate de que el backend envíe este campo como booleano
-        activo2: item.activo, // Para la columna de acción, puedes usar el mismo campo o uno diferente según tu lógica
-      }));
+
+      const usuarios: Usuario[] = data.data.map((item: any) => {
+        // Armo el array de roles
+        const rolesEstructurados: ArrayBadgeConfig[] = (item.rol || []).map(
+          (nombreRol: string) => {return getBadgeConfig(nombreRol)},
+        );
+
+        console.log("rolesEstructurados: ", rolesEstructurados);
+
+        return {
+          id: item.id,
+          nombre: item.nombre,
+          email: item.email,
+          rol: rolesEstructurados,
+          fecharegistro: item.fecharegistro,
+          activo: item.activo, // Asegúrate de que el backend envíe este campo como booleano
+          activo2: item.activo, // Para la columna de acción, puedes usar el mismo campo o uno diferente según tu lógica
+        };
+      });
       return usuarios;
     } catch (error) {
       console.error("Error fetching usuarios:", error);
@@ -144,8 +155,25 @@ export default function UsuariosPage() {
     }
   };
 
+  const getBadgeConfig = (rol: string): ArrayBadgeConfig => {
+    if (rol === "Administrador") {
+      return {
+        text: rol,
+        color: "bg-red-100 text-red-800",
+        tooltip: "Permisos totales",
+      };
+    } else {
+      return {
+        text: rol,
+        color: "bg-gray-100 text-gray-800",
+        tooltip: "",
+      };
+    }
+  };
+
   const fetchUsuarios = async () => {
     const usuariosData = await listaUsuarios();
+    console.log("Usuarios: ", usuariosData);
     setUsuarios(usuariosData);
   };
 
@@ -164,7 +192,7 @@ export default function UsuariosPage() {
     },
     {
       accessorKey: "nombre",
-      header: "Nombre Completo",
+      header: "Usuario",
       //linkPrefix: "/usuarios/", // Hace que el nombre sea un Link a /usuarios/[id]
       //linkIdKey: "id",
       tooltip: "Nombre oficial del usuario registrado",
@@ -177,7 +205,8 @@ export default function UsuariosPage() {
     },
     {
       accessorKey: "rol",
-      header: "Rol de Sistema",
+      dataType: "arrayText",
+      header: "Rol",
       visible: true, // Puedes cambiarlo a false y Tanstack la removerá del renderizado
     },
     // {

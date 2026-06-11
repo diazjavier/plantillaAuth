@@ -40,6 +40,12 @@ interface BooleanBadgeConfig {
   falseTooltip?: string;
 }
 
+export interface ArrayBadgeConfig {
+  text: string;
+  color?: string;
+  tooltip?: string;
+}
+
 export interface ColumnConfig<T> {
   accessorKey: keyof T | string; // Clave del objeto o 'actions' para botones personalizados
   header: string;
@@ -50,11 +56,12 @@ export interface ColumnConfig<T> {
   linkIdKey?: keyof T;  // Clave para armar la URL del link, ej: 'id'
   icon?: ComponentType<{ className?: string }>; // Componente de ícono fijo (Radix, Lucide, etc.)
   action?: (row: T) => void; // Función callback para el click
-  dataType?: 'text' | 'number' | 'date' | 'money' | 'icon' | 'boolean' | 'state' | 'email'; // Para formateo específico
+  dataType?: 'text' | 'number' | 'date' | 'money' | 'icon' | 'boolean' | 'state' | 'email' | 'arrayText'; // Para formateo específico
   textColor?: "ruby" | "blue" | "gray" | "gold" | "bronze" | "brown" | "yellow" | "amber" | "orange" | "tomato" | "red" | "crimson" | "pink" | "plum" | "purple" | "violet" | "iris" | "indigo" | "cyan" | "teal" | "jade" | "green" | "grass" | "lime" | "mint" | "sky"; // Para íconos, si quieres colores personalizados
   bgColor?: "ruby" | "blue" | "gray" | "gold" | "bronze" | "brown" | "yellow" | "amber" | "orange" | "tomato" | "red" | "crimson" | "pink" | "plum" | "purple" | "violet" | "iris" | "indigo" | "cyan" | "teal" | "jade" | "green" | "grass" | "lime" | "mint" | "sky"; // Para badges, si quieres colores personalizados
   booleanIcon?: BooleanIconConfig<T>; // Configuración para renderizado de booleanos como íconos
   booleanBadge?: BooleanBadgeConfig; // Configuración para renderizado de booleanos como badges
+  arrBadgeConfig?: ArrayBadgeConfig[];
 }
 
 export interface GenericButton {

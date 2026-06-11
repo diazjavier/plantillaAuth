@@ -2,29 +2,28 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
-  flexRender,
   createColumnHelper,
   SortingState,
+  flexRender,
 } from "@tanstack/react-table";
-import { Table, Button, Flex, TextField, Tooltip } from "@radix-ui/themes";
+import { Table, Button, Flex, Tooltip, TextField } from "@radix-ui/themes";
+import Link from "next/link";
 import {
-  ChevronUpIcon,
-  ChevronDownIcon,
   MagnifyingGlassIcon,
-
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@radix-ui/react-icons";
-import { GenericTableProps2 } from "@/interfaces/generics"; 
+import { GenericTableProps2, ArrayBadgeConfig } from "@/interfaces/generics";
 import {
-  formatCurrency,
-  formatDate,
   getBadgeColorClass,
+  formatDate,
+  formatCurrency,
 } from "@/utils/functions";
 
 export default function GenericTable2<T extends Record<string, any>>({
@@ -59,7 +58,6 @@ export default function GenericTable2<T extends Record<string, any>>({
               falseColor,
               trueTooltip,
               falseTooltip,
-              //iconRenderer,
               action,
             } = col.booleanIcon;
 
@@ -70,7 +68,11 @@ export default function GenericTable2<T extends Record<string, any>>({
 
             return action ? (
               <Tooltip content={tooltip}>
-                <Button onClick={() => action?.(rowData)} variant="ghost" className="p-0">
+                <Button
+                  onClick={() => action?.(rowData)}
+                  variant="ghost"
+                  className="p-0"
+                >
                   <Icon className={`w-5 h-5 ${color}`} />
                 </Button>
               </Tooltip>
@@ -81,8 +83,38 @@ export default function GenericTable2<T extends Record<string, any>>({
             );
           }
 
+          if (col.dataType === "arrayText" && Array.isArray(value)) {
+            return (
+              <Flex gap="1" wrap="wrap" className="max-w-xs">
+                {value.map((tag: ArrayBadgeConfig, index: number) => {
+                  const badge = (
+                    <span
+                      key={tag.text + "-" + index}
+                      className={`
+                      inline-flex items-center
+                      rounded-full
+                      px-2 py-1
+                      text-xs font-medium
+                      ${tag.color}`}
+                    >
+                      {tag.text}
+                    </span>
+                  );
+
+                  return tag.tooltip ? (
+                    <Tooltip content={tag.tooltip}>
+                      <span>{badge}</span>
+                    </Tooltip>
+                  ) : (
+                    badge
+                  );
+                })}
+              </Flex>
+            );
+          }
+
           // Render de booleanos como píldoras con tooltip y colores personalizados
-          if (col.booleanBadge && col.dataType === "state") {
+          if (col.dataType === "state" && col.booleanBadge) {
             const {
               trueLabel,
               falseLabel,
@@ -354,11 +386,7 @@ export default function GenericTable2<T extends Record<string, any>>({
       </div>
 
       {/* Controles de Paginación */}
-      <Flex justify="between" align="center" className="px-1">
-        <span className="text-sm text-gray-600">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
-        </span>
+      <Flex justify="end" align="center" className="px-1">
         <Flex gap="2">
           <Button
             variant="soft"
@@ -367,6 +395,10 @@ export default function GenericTable2<T extends Record<string, any>>({
           >
             {"< Anterior"}
           </Button>
+          <span className="text-sm text-gray-600 pt-2">
+            Página {table.getState().pagination.pageIndex + 1} de{" "}
+            {table.getPageCount()}
+          </span>
           <Button
             variant="soft"
             disabled={!table.getCanNextPage()}

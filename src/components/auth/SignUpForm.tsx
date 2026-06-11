@@ -240,16 +240,18 @@ function SignUpForm({ userData }: UsuarioFormProps) {
                 name="activo"
                 control={control}
                 render={({ field }) => (
-                  <Switch
-                    id="activo"
-                    checked={field.value} // Sincroniza el booleano
-                    onCheckedChange={field.onChange} // Actualiza react-hook-form al hacer click
-                  />
+                  <>
+                    <Switch
+                      id="activo"
+                      checked={field.value} // Sincroniza el booleano
+                      onCheckedChange={field.onChange} // Actualiza react-hook-form al hacer click
+                    />
+                    <label htmlFor="activo" className="cursor-pointer text-sm">
+                      {field.value ? "Usuario Activo" : "Usuario Inactivo"}
+                    </label>
+                  </>
                 )}
               />
-              <label htmlFor="activo" className="cursor-pointer text-sm">
-                Usuario Activo
-              </label>
             </Flex>
           )}
 
