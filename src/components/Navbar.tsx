@@ -58,7 +58,7 @@ function Navbar() {
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
                     <button className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Usuarios
+                      Sistema
                       <CaretDownIcon />
                     </button>
                   </DropdownMenu.Trigger>
@@ -71,6 +71,9 @@ function Navbar() {
                     </DropdownMenu.Item>
                     <DropdownMenu.Item asChild>
                       <NextLink href="/auth/permisos">Permisos</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/usuariosroles">Asignación de roles</NextLink>
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
@@ -144,7 +147,7 @@ function Navbar() {
                     {/* NUEVAS OPCIONES EN EL MENÚ MÓVIL */}
                     <DropdownMenu.Separator />
                     <div className="px-2 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                      Usuarios
+                      Sistema
                     </div>
                     <DropdownMenu.Item asChild>
                       <NextLink href="/auth/users2">Usuarios</NextLink>
@@ -154,6 +157,9 @@ function Navbar() {
                     </DropdownMenu.Item>
                     <DropdownMenu.Item asChild>
                       <NextLink href="/auth/permisos">Permisos</NextLink>
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/usuariosroles">Asignación de roles</NextLink>
                     </DropdownMenu.Item>
 
 

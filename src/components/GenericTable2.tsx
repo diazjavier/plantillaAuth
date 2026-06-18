@@ -171,7 +171,6 @@ export default function GenericTable2<T extends Record<string, any>>({
           }
 
           // Celda con Ícono + Acción ejecutable
-          //          const IconComponent = col.iconRenderer ? col.iconRenderer({ rowData }) : col.icon;
 
           if (col.dataType === "icon" && col.icon && col.action) {
             return (

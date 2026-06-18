@@ -15,6 +15,10 @@ export function getUsuarios() {
   return `select * from usuarios;`;
 }
 
+export function getUsuariosActivosMini() {
+  return `select id, username as nombre from usuarios where fechafin is null order by username;`;
+}
+
 export function creaUsuario(user: User) {
   return `insert into usuarios (userName, password, email, comentario) values ('${user.userName}', '${user.password}', '${user.email}', '${user.comentario}') RETURNING *;`;
 }
@@ -65,8 +69,12 @@ export function getRolesCustom() {
   return `select id, rol, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from roles;`;
 }
 
+export function getRolesActivosMini() {
+  return `select id, rol as nombre from roles where fechafin is null order by rol;`;
+}
+
 export function getUsuariosRoles() {
-  return `select ur.idusuario, ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id;`;
+  return `select ur.idusuario, ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id inner join usuarios u on ur.idusuario = u.id where ur.fechafin is null and r.fechafin is null and u.fechafin is null;`;
 }
 
 export function getRolesPorUsuario(idUser: string) {
@@ -97,5 +105,6 @@ export function updatePermiso(id: string, permiso: PermisoProps) {
 export function getPermisosCustom() {
   return `select id, permiso, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from permisos;`;
 }
+
 
 

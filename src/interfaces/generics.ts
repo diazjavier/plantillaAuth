@@ -104,5 +104,31 @@ export interface PermisoProps {
     activo?: boolean;
 }
 
+export interface ItemMinimo {
+  id: string;
+  nombre: string;
+}
+
+export interface ListaMinima {
+  lista: ItemMinimo[];
+}
+
+export interface Relacion {
+  entidadAId: string;
+  entidadBId: string;
+  nombreB: string;
+  fechaCaducidad?: string;
+  isNew?: boolean;
+}
+
+export interface MultiRelationProps {
+  title: string;
+  entityATitle: string;
+  listaA: ItemMinimo[];
+  listaB: ItemMinimo[];
+  listaRelacion: Relacion[];
+}
+
+
 
 
