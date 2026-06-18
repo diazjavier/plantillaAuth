@@ -9,50 +9,9 @@ import {
   Relacion,
 } from "@/interfaces/generics";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function UsuariosRoles() {
-  // const LISTA_ENTIDADES_A = [
-  //   {
-  //     id: "A-101",
-  //     nombre: "Estrategia Global de Marketing",
-  //   },
-  //   {
-  //     id: "A-102",
-  //     nombre: "Campaña de Lanzamiento Q3",
-  //   },
-  //   {
-  //     id: "A-103",
-  //     nombre: "Auditoría de Canales Digitales",
-  //   },
-  // ];
-
-  // const DISPONIBLES_ENTIDADES_B = [
-  //   { id: "B-1", nombre: "Google Ads Network Assets" },
-  //   { id: "B-2", nombre: "Facebook Video Creative" },
-  //   { id: "B-3", nombre: "Copywriting Newsletter Kit" },
-  //   { id: "B-4", nombre: "Instagram Reel Master Template" },
-  // ];
-
-//   const relaciones = [
-//     {
-//       entidadAId: "1",
-//       entidadBId: "B-1",
-//       nombreB: "Google Ads Banner",
-//       fechaCaducidad: "2026-12-31",
-//     },
-//     {
-//       entidadAId: "1",
-//       entidadBId: "B-3",
-//       nombreB: "Newsletter Copywriting",
-//       fechaCaducidad: "",
-//     },
-//     {
-//       entidadAId: "3",
-//       entidadBId: "B-2",
-//       nombreB: "Facebook Video Ad",
-//       fechaCaducidad: "2026-11-15",
-//     },
-//   ];
 
   const [usuariosActivos, setUsuariosActivos] = useState<ItemMinimo[]>([]);
   const [rolesActivos, setRolesActivos] = useState<ItemMinimo[]>([]);
@@ -110,6 +69,7 @@ export default function UsuariosRoles() {
       const data = await res.json();
       const relacionesActivasData = data.data.map((item: any) => {
         return {
+          id: item.id.toString(),  
           entidadAId: item.idusuario.toString(),
           entidadBId: item.idrol.toString(),
           nombreB: item.rol,
@@ -137,6 +97,46 @@ export default function UsuariosRoles() {
     setRelacionesActivas(relacionesActivasData);
   };
 
+  const eliminaUsuarioRol = async (idRelacion: string) => {
+    const response = await fetch(`/api/auth/usuarios/roles/inactivate/${idRelacion}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res = await response.json();
+    if (response.status !== 200) {
+      // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
+      console.log("Error al inactivar el usuario: ", res.error);
+      return;
+    }
+    toast.success(`Rol desvinculado del usuario con éxito con éxito`);
+    fetchUsuarios();
+  };
+
+  
+  const confirmaEliminaUsuarioRol = (id: string) => {
+    setConfirmDialogConfig({
+      //isOpen: true,
+      onClose: () => setConfirmDialogOpen(false),
+      title: "Desasignación de Roles a Usuario",
+      description: "¿Está seguro de que desea inactivar este rol a este usuario?",
+      confirmText: "Inactivar",
+      cancelText: "Cancelar",
+      confirmColor: "red",
+      onConfirm: async () => {
+        try {
+          await eliminaUsuarioRol(id);
+          setConfirmDialogOpen(false);
+        } catch (error) {
+          toast.error("No se pudo procesar la solicitud");
+        }
+      },
+    });
+    setConfirmDialogOpen(true);
+  };
+
+
   useEffect(() => {
     fetchUsuarios();
     fetchRoles();
@@ -149,6 +149,7 @@ export default function UsuariosRoles() {
     listaA: usuariosActivos,
     listaB: rolesActivos,
     listaRelacion: relacionesActivas,
+    action: (idRelacion) => confirmaEliminaUsuarioRol(idRelacion),
   };
 
   return (

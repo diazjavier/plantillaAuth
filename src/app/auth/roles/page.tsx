@@ -56,7 +56,6 @@ export default function RolesPage() {
       onConfirm: async () => {
         try {
           await activaRol(id);
-          toast.success(`Rol activado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           // Opcional: Toast de error por si falla la red
@@ -79,7 +78,6 @@ export default function RolesPage() {
       onConfirm: async () => {
         try {
           await inactivaRol(id);
-          toast.success(`Rol inactivado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           toast.error("No se pudo procesar la solicitud");
@@ -102,6 +100,7 @@ export default function RolesPage() {
       console.log("Error al activar el Rol: ", res.error);
       return;
     }
+    toast.success(`Rol activado con éxito`);
     fetchRoles();
   };
 
@@ -118,6 +117,7 @@ export default function RolesPage() {
       console.log("Error al inactivar el Rol: ", res.error);
       return;
     }
+    toast.success(`Rol inactivado con éxito`);
     fetchRoles();
   };
 

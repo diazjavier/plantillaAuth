@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import * as Popover from "@radix-ui/react-popover";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { MultiRelationProps, Relacion } from "@/interfaces/generics";
 
 interface GenericRelationProps {
@@ -22,13 +23,17 @@ export default function GenericMultiRelation({
   const [relacionesActuales, setRelacionesActuales] = useState<Relacion[]>([]);
 
   useEffect(() => {
-    const elementoSeleccionado = LISTA_ENTIDADES_A[0]?.id ? LISTA_ENTIDADES_A[0].id.toString() : "";
-    setSeleccionadoAId(elementoSeleccionado);
+    const primerElemento = LISTA_ENTIDADES_A[0]?.id
+      ? LISTA_ENTIDADES_A[0].id.toString()
+      : "";
+    setSeleccionadoAId(primerElemento);
   }, [relaciones, LISTA_ENTIDADES_A]);
 
   useEffect(() => {
     setRelacionesActuales(
-      relaciones.filter((r) => r.entidadAId.toString() === seleccionadoAId.toString()),
+      relaciones.filter(
+        (r) => r.entidadAId.toString() === seleccionadoAId.toString(),
+      ),
     );
   }, [seleccionadoAId]);
 
@@ -69,12 +74,13 @@ export default function GenericMultiRelation({
     setIsPopoverOpen(false);
   };
 
-  const eliminarRelacion = (idB: string) => {
-    setRelacionesActuales(
-      relacionesActuales.filter(
-        (r) => !(r.entidadAId === seleccionadoAId && r.entidadBId === idB),
-      ),
-    );
+  const eliminarRelacion = (id: string) => {
+    relationData.action?.(id);
+    // setRelacionesActuales(
+    //   relacionesActuales.filter(
+    //     (r) => !(r.entidadAId === seleccionadoAId && r.entidadBId === idB),
+    //   ),
+    // );
   };
 
   const guardarCambiosPostgres = async () => {
@@ -194,10 +200,7 @@ export default function GenericMultiRelation({
           </div>
 
           {/* Buscador de Entidades B (Alineado simétricamente) */}
-          <Popover.Root
-            open={isPopoverOpen}
-            onOpenChange={setIsPopoverOpen}
-          >
+          <Popover.Root open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <Popover.Anchor asChild>
               <div className="p-5 bg-white border-b border-slate-100">
                 <input
@@ -214,9 +217,10 @@ export default function GenericMultiRelation({
               </div>
             </Popover.Anchor>
             <Popover.Portal>
-              <Popover.Content 
+              <Popover.Content
                 onOpenAutoFocus={(e) => e.preventDefault()}
-                className="w-[var(--radix-popover-trigger-width)] max-h-52 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-1.5 animate-in fade-in-50 duration-150">
+                className="w-[var(--radix-popover-trigger-width)] max-h-52 overflow-y-auto bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-1.5 animate-in fade-in-50 duration-150"
+              >
                 {resultadosBuscador.map((entidadB) => (
                   <button
                     key={entidadB.id.toString()}
@@ -236,13 +240,13 @@ export default function GenericMultiRelation({
           <div className="space-y-4 p-5">
             {relacionesActuales.length === 0 ? (
               <div className="border border-dashed border-slate-200 rounded-xl p-10 text-center text-[#B4B8CC] text-sm bg-[#F8F9FC]/40">
-                No hay roles relacionados
+                No hay elementos relacionados
               </div>
             ) : (
               <div className="space-y-2">
                 {relacionesActuales.map((rel) => (
                   <div
-                    key={rel.entidadBId.toString()}
+                    key={rel.id?.toString()}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded-xl border transition-all ${
                       rel.isNew
                         ? "bg-amber-50/60 border-amber-300 shadow-sm shadow-amber-100/50"
@@ -267,25 +271,12 @@ export default function GenericMultiRelation({
                     <div className="flex items-center gap-4 mt-3 sm:mt-0 justify-between sm:justify-end">
                       <button
                         onClick={() =>
-                          eliminarRelacion(rel.entidadBId.toString())
+                          eliminarRelacion(rel.id ? rel.id?.toString() : "")
                         }
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all self-end sm:self-center"
                         title="Remover relación"
                       >
-                        <svg
-                          xmlns="http://w3.org"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
+                        <TrashIcon className="text-red-400 w-5 h-5"/>
                       </button>
                     </div>
                   </div>

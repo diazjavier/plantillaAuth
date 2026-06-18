@@ -56,7 +56,6 @@ export default function PermisosPage() {
       onConfirm: async () => {
         try {
           await activaPermiso(id);
-          toast.success(`Permiso activado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           // Opcional: Toast de error por si falla la red
@@ -79,7 +78,6 @@ export default function PermisosPage() {
       onConfirm: async () => {
         try {
           await inactivaPermiso(id);
-          toast.success(`Permiso inactivado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           toast.error("No se pudo procesar la solicitud");
@@ -102,6 +100,7 @@ export default function PermisosPage() {
       console.log("Error al activar el Permiso: ", res.error);
       return;
     }
+    toast.success(`Permiso activado con éxito`);
     fetchPermisos();
   };
 
@@ -118,6 +117,7 @@ export default function PermisosPage() {
       console.log("Error al inactivar el Permiso: ", res.error);
       return;
     }
+    toast.success(`Permiso inactivado con éxito`);
     fetchPermisos();
   };
 

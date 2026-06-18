@@ -60,7 +60,6 @@ export default function UsuariosPage() {
       onConfirm: async () => {
         try {
           await activaUsuario(id);
-          toast.success(`Usuario activado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           // Opcional: Toast de error por si falla la red
@@ -83,7 +82,6 @@ export default function UsuariosPage() {
       onConfirm: async () => {
         try {
           await inactivaUsuario(id);
-          toast.success(`Usuario inactivado con éxito`);
           setConfirmDialogOpen(false);
         } catch (error) {
           toast.error("No se pudo procesar la solicitud");
@@ -106,6 +104,7 @@ export default function UsuariosPage() {
       console.log("Error al activar el usuario: ", res.error);
       return;
     }
+    toast.success(`Usuario activado con éxito`);
     fetchUsuarios();
   };
 
@@ -122,6 +121,7 @@ export default function UsuariosPage() {
       console.log("Error al inactivar el usuario: ", res.error);
       return;
     }
+    toast.success(`Usuario inactivado con éxito`);
     fetchUsuarios();
   };
 
@@ -133,7 +133,9 @@ export default function UsuariosPage() {
       const usuarios: Usuario[] = data.data.map((item: any) => {
         // Armo el array de roles
         const rolesEstructurados: ArrayBadgeConfig[] = (item.rol || []).map(
-          (nombreRol: string) => {return getBadgeConfig(nombreRol)},
+          (nombreRol: string) => {
+            return getBadgeConfig(nombreRol);
+          },
         );
 
         return {

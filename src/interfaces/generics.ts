@@ -114,6 +114,7 @@ export interface ListaMinima {
 }
 
 export interface Relacion {
+  id?: string;
   entidadAId: string;
   entidadBId: string;
   nombreB: string;
@@ -127,6 +128,7 @@ export interface MultiRelationProps {
   listaA: ItemMinimo[];
   listaB: ItemMinimo[];
   listaRelacion: Relacion[];
+  action?: (idRelacion: string) => void; //Función para eliminar una relación
 }
 
 
