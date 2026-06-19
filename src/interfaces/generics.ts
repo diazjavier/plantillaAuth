@@ -122,13 +122,19 @@ export interface Relacion {
   isNew?: boolean;
 }
 
+export interface RelacionMini {
+  entidadAId: string;
+  entidadBId: string;
+}
+
 export interface MultiRelationProps {
   title: string;
   entityATitle: string;
   listaA: ItemMinimo[];
   listaB: ItemMinimo[];
   listaRelacion: Relacion[];
-  action?: (idRelacion: string) => void; //Función para eliminar una relación
+  elimina?: (idRelacion: string) => void; //Función para eliminar una relación
+  agrega?: (relacionesNUevas: Relacion[]) => void; //Función para agregar relaciones
 }
 
 

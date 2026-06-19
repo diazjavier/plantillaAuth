@@ -16,26 +16,32 @@ export default function GenericMultiRelation({
   const titleEntityA = relationData.entityATitle;
   const LISTA_ENTIDADES_A = relationData.listaA;
   const DISPONIBLES_ENTIDADES_B = relationData.listaB;
-  const relaciones = relationData.listaRelacion;
+  // const relaciones = relationData.listaRelacion;
 
   const [seleccionadoAId, setSeleccionadoAId] = useState<string>("");
-
+  const [relaciones, setRelaciones] = useState<Relacion[]>(relationData.listaRelacion);
   const [relacionesActuales, setRelacionesActuales] = useState<Relacion[]>([]);
 
-  useEffect(() => {
-    const primerElemento = LISTA_ENTIDADES_A[0]?.id
-      ? LISTA_ENTIDADES_A[0].id.toString()
-      : "";
-    setSeleccionadoAId(primerElemento);
-  }, [relaciones, LISTA_ENTIDADES_A]);
+//   useEffect(() => {
+//     const primerElemento = LISTA_ENTIDADES_A[0]?.id
+//       ? LISTA_ENTIDADES_A[0].id.toString()
+//       : "";
+//     setSeleccionadoAId(primerElemento);
+//   }, [relaciones, LISTA_ENTIDADES_A]);
+
+useEffect(() => {
+  if (!seleccionadoAId && LISTA_ENTIDADES_A.length > 0) {
+    setSeleccionadoAId(LISTA_ENTIDADES_A[0].id.toString());
+  }
+}, [LISTA_ENTIDADES_A]);
 
   useEffect(() => {
-    setRelacionesActuales(
-      relaciones.filter(
-        (r) => r.entidadAId.toString() === seleccionadoAId.toString(),
-      ),
-    );
-  }, [seleccionadoAId]);
+      actualizaRelaciones(seleccionadoAId);
+  }, [seleccionadoAId, relaciones]);
+
+  useEffect(() => {
+    setRelaciones(relationData.listaRelacion);
+  }, [relationData.listaRelacion]);
 
   const [busquedaA, setBusquedaA] = useState("");
   const [busquedaB, setBusquedaB] = useState("");
@@ -45,13 +51,17 @@ export default function GenericMultiRelation({
     entidad.nombre.toLowerCase().includes(busquedaA.toLowerCase()),
   );
 
-  //   const relacionesActuales = todasLasRelaciones.filter(
-  //     (r) => r.entidadAId === seleccionadoAId.toString(),
-  //   );
-
   const resultadosBuscador = DISPONIBLES_ENTIDADES_B.filter((entidad) =>
     entidad.nombre.toLowerCase().includes(busquedaB.toLowerCase()),
   );
+
+  const actualizaRelaciones = (seleccionado: string) => {
+    setRelacionesActuales(
+      relaciones.filter(
+        (r) => r.entidadAId.toString() === seleccionado,
+      ),
+    );
+  };
 
   const agregarRelacion = (idB: string, nombreB: string) => {
     if (
@@ -75,7 +85,7 @@ export default function GenericMultiRelation({
   };
 
   const eliminarRelacion = (id: string) => {
-    relationData.action?.(id);
+    relationData.elimina?.(id);
     // setRelacionesActuales(
     //   relacionesActuales.filter(
     //     (r) => !(r.entidadAId === seleccionadoAId && r.entidadBId === idB),
@@ -84,12 +94,10 @@ export default function GenericMultiRelation({
   };
 
   const guardarCambiosPostgres = async () => {
-    setRelacionesActuales(
-      relacionesActuales.map((r) =>
-        r.entidadAId === seleccionadoAId ? { ...r, isNew: false } : r,
-      ),
-    );
-    alert("Cambios sincronizados en la base de datos.");
+    const itemSeleccionado = seleccionadoAId;
+    const relacionesAgregadas = relacionesActuales.filter((r) => r.isNew);
+    relationData.agrega?.(relacionesAgregadas);
+    setSeleccionadoAId(itemSeleccionado);
   };
 
   const activeDoc = LISTA_ENTIDADES_A.find(
@@ -246,7 +254,7 @@ export default function GenericMultiRelation({
               <div className="space-y-2">
                 {relacionesActuales.map((rel) => (
                   <div
-                    key={rel.id?.toString()}
+                    key={rel.id?.toString()+"-"+rel.nombreB}
                     className={`flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded-xl border transition-all ${
                       rel.isNew
                         ? "bg-amber-50/60 border-amber-300 shadow-sm shadow-amber-100/50"

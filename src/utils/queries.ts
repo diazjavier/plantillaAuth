@@ -1,5 +1,5 @@
 import { User } from "@/interfaces/auth";
-import { RolProps, PermisoProps } from "@/interfaces/generics";
+import { RolProps, PermisoProps, RelacionMini } from "@/interfaces/generics";
 
 export function getUsuariosDummy() {
 return  `select 
@@ -82,7 +82,12 @@ export function getRolesPorUsuario(idUser: string) {
 }
 
 export function inactivateUsuarioRol(idRelacion: string) {
-  return `update usuario_rol set fechafin = now() where id = ${idRelacion};`;
+  return `update usuario_rol set fechafin = now() where id = ${idRelacion} returning *;`;
+}
+
+export function creaUsuarioRol(rels: RelacionMini[]) {
+  const valores = rels.map((rel: any) => `(${rel.entidadAId}, ${rel.entidadBId})`).join(", ");
+  return `insert into usuario_rol (idusuario, idrol) values ${valores} returning *;`;
 }
 
 export function creaPermiso(permiso: PermisoProps) {
