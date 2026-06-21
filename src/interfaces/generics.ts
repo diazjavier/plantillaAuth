@@ -130,6 +130,8 @@ export interface RelacionMini {
 export interface MultiRelationProps {
   title: string;
   entityATitle: string;
+  relationTitle: string;
+  relationSubtitle: string;
   listaA: ItemMinimo[];
   listaB: ItemMinimo[];
   listaRelacion: Relacion[];

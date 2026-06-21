@@ -74,11 +74,11 @@ export function getRolesActivosMini() {
 }
 
 export function getUsuariosRoles() {
-  return `select ur.id, ur.idusuario, ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id inner join usuarios u on ur.idusuario = u.id where ur.fechafin is null and r.fechafin is null and u.fechafin is null;`;
+  return `select ur.id, ur.idusuario, ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id inner join usuarios u on ur.idusuario = u.id where ur.fechafin is null and r.fechafin is null and u.fechafin is null order by r.rol;`;
 }
 
 export function getRolesPorUsuario(idUser: string) {
-  return `select ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id where ur.idusuario = ${idUser};`;
+  return `select ur.idrol, r.rol from usuario_rol ur inner join roles r on ur.idrol = r.id where ur.idusuario = ${idUser} order by r.rol;`;
 }
 
 export function inactivateUsuarioRol(idRelacion: string) {

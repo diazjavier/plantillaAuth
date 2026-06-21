@@ -194,6 +194,8 @@ export default function UsuariosRoles() {
     setRelProps({
       title: "Relación Usuarios - Roles",
       entityATitle: "Usuarios",
+      relationTitle: "Roles asignados",
+      relationSubtitle: "Roles asignados al usuario: ",
       listaA: usuariosActivos,
       listaB: rolesActivos,
       listaRelacion: relacionesActivas,
