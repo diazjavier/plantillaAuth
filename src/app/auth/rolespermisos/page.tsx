@@ -7,14 +7,13 @@ import {
   ItemMinimo,
   MultiRelationProps,
   Relacion,
-  RelacionMini,
 } from "@/interfaces/generics";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 export default function UsuariosRoles() {
-  const [usuariosActivos, setUsuariosActivos] = useState<ItemMinimo[]>([]);
   const [rolesActivos, setRolesActivos] = useState<ItemMinimo[]>([]);
+  const [permisosActivos, setPermisosActivos] = useState<ItemMinimo[]>([]);
   const [relacionesActivas, setRelacionesActivas] = useState<Relacion[]>([]);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [confirmDialogConfig, setConfirmDialogConfig] =
@@ -30,23 +29,6 @@ export default function UsuariosRoles() {
     });
 
   const [relProps, setRelProps] = useState<MultiRelationProps>();
-
-  const listaUsuariosActivos = async () => {
-    try {
-      const res = await fetch("/api/auth/usuarios/activosmini");
-      const data = await res.json();
-      const usuariosActivosData = data.data.map((item: any) => {
-        return {
-          id: item.id.toString(),
-          nombre: item.nombre,
-        };
-      });
-      return usuariosActivosData;
-    } catch (error) {
-      console.error("Error fetching usuarios:", error);
-      return [];
-    }
-  };
 
   const listaRolesActivos = async () => {
     try {
@@ -65,16 +47,34 @@ export default function UsuariosRoles() {
     }
   };
 
+  const listaPermisosActivos = async () => {
+    try {
+      const res = await fetch("/api/auth/permisos/activosmini");
+      const data = await res.json();
+      const permisosActivosData = data.data.map((item: any) => {
+        return {
+          id: item.id.toString(),
+          nombre: item.nombre,
+        };
+      });
+      return permisosActivosData;
+    } catch (error) {
+      console.error("Error fetching permisos:", error);
+      return [];
+    }
+  };
+
   const listaRelacionesActivas = async () => {
     try {
-      const res = await fetch("/api/auth/usuarios/roles");
+      const res = await fetch("/api/auth/roles/permisos");
       const data = await res.json();
+      console.log("Data: ", data);
       const relacionesActivasData = data.data.map((item: any) => {
         return {
           id: item.id.toString(),
-          entidadAId: item.idusuario.toString(),
-          entidadBId: item.idrol.toString(),
-          nombreB: item.rol,
+          entidadAId: item.idrol.toString(),
+          entidadBId: item.idpermiso.toString(),
+          nombreB: item.permiso,
         };
       });
       return relacionesActivasData;
@@ -84,14 +84,14 @@ export default function UsuariosRoles() {
     }
   };
 
-  const fetchUsuarios = async () => {
-    const usuariosActivosData = await listaUsuariosActivos();
-    setUsuariosActivos(usuariosActivosData);
-  };
-
   const fetchRoles = async () => {
     const rolesActivosData = await listaRolesActivos();
     setRolesActivos(rolesActivosData);
+  };
+
+  const fetchPermisos = async () => {
+    const permisosActivosData = await listaPermisosActivos();
+    setPermisosActivos(permisosActivosData);
   };
 
   const fetchRelaciones = async () => {
@@ -99,9 +99,9 @@ export default function UsuariosRoles() {
     setRelacionesActivas(relacionesActivasData);
   };
 
-  const eliminaUsuarioRol = async (idRelacion: string) => {
+  const eliminaRolPermiso = async (idRelacion: string) => {
     const response = await fetch(
-      `/api/auth/usuarios/roles/inactivate/${idRelacion}`,
+      `/api/auth/roles/permisos/inactivate/${idRelacion}`,
       {
         method: "POST",
         headers: {
@@ -112,21 +112,21 @@ export default function UsuariosRoles() {
     const res = await response.json();
     if (response.status !== 200) {
       // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-      console.log("Error al inactivar el usuario: ", res.error);
+      console.log("Error al inactivar el permiso: ", res.error);
       return;
     }
-    toast.success(`Rol desvinculado del usuario con éxito`);
+    toast.success(`Permiso desvinculado del rol con éxito`);
     fetchRelaciones();
     // return relacionesActivas;
   };
 
-  const agregaUsuarioRol = async (relacs: Relacion[]) => {
+  const agregaRolPermiso = async (relacs: Relacion[]) => {
     const relacionesMini = relacs.map(({ entidadAId, entidadBId }) => ({
       entidadAId,
       entidadBId,
     }));
 
-    const response = await fetch(`/api/auth/usuarios/roles/register`, {
+    const response = await fetch(`/api/auth/roles/permisos/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,10 +136,10 @@ export default function UsuariosRoles() {
     const res = await response.json();
     if (response.status !== 201) {
       // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario
-      console.log("Error en la asignación de roles: ", res.error);
+      console.log("Error en la asignación de permisos: ", res.error);
       return;
     }
-    toast.success(`Roles asignados con éxito`);
+    toast.success(`Permisos asignados con éxito`);
     fetchRelaciones();
     // return relacionesActivas;
   };
@@ -148,9 +148,9 @@ export default function UsuariosRoles() {
     setConfirmDialogConfig({
       //isOpen: true,
       onClose: () => setConfirmDialogOpen(false),
-      title: "Desasignación de Roles a Usuario",
+      title: "Desasignación de Permisos a Roles",
       description:
-        "¿Está seguro de que desea inactivar este rol a este usuario?",
+        "¿Está seguro de que desea inactivar este permiso a este rol?",
       confirmText: "Inactivar",
       cancelText: "Cancelar",
       confirmColor: "red",
@@ -158,7 +158,7 @@ export default function UsuariosRoles() {
         try {
           setConfirmDialogOpen(false);
           //return await eliminaUsuarioRol(id);
-          eliminaUsuarioRol(id);
+          eliminaRolPermiso(id);
         } catch (error) {
           toast.error("No se pudo procesar la solicitud");
         }
@@ -171,9 +171,9 @@ export default function UsuariosRoles() {
     setConfirmDialogConfig({
       //isOpen: true,
       onClose: () => setConfirmDialogOpen(false),
-      title: "Asignación de Roles",
+      title: "Asignación de Permisos",
       description:
-        "¿Está seguro de que desea asignar estos roles a este usuario?",
+        "¿Está seguro de que desea asignar estos permisos a este rol?",
       confirmText: "Asignar",
       cancelText: "Cancelar",
       confirmColor: "green",
@@ -181,7 +181,7 @@ export default function UsuariosRoles() {
         try {
           setConfirmDialogOpen(false);
           //return await eliminaUsuarioRol(id);
-          agregaUsuarioRol(agregadas);
+          agregaRolPermiso(agregadas);
         } catch (error) {
           toast.error("No se pudo procesar la solicitud");
         }
@@ -192,12 +192,12 @@ export default function UsuariosRoles() {
 
   const actualizaProps = () => {
     setRelProps({
-      title: "Relación Usuarios - Roles",
-      entityATitle: "Usuarios",
-      relationTitle: "Roles asignados",
-      relationSubtitle: "Roles asignados al usuario: ",
-      listaA: usuariosActivos,
-      listaB: rolesActivos,
+      title: "Relación Roles - Permisos",
+      entityATitle: "Roles",
+      relationTitle: "Permisos asignados",
+      relationSubtitle: "Permisos asignados al rol: ",
+      listaA: rolesActivos,
+      listaB: permisosActivos,
       listaRelacion: relacionesActivas,
       elimina: (idRelacion: string) => confirmaEliminaRelaciones(idRelacion),
       agrega: (relacionesAgregadas: Relacion[]) => confirmaAgregaRelaciones(relacionesAgregadas),
@@ -209,8 +209,8 @@ export default function UsuariosRoles() {
   }, [relacionesActivas]);
 
   useEffect(() => {
-    fetchUsuarios();
     fetchRoles();
+    fetchPermisos();
     fetchRelaciones();
   }, []);
 

@@ -75,6 +75,9 @@ function Navbar() {
                     <DropdownMenu.Item asChild>
                       <NextLink href="/auth/usuariosroles">Asignación de roles</NextLink>
                     </DropdownMenu.Item>
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/rolespermisos">Asignación de permisos</NextLink>
+                    </DropdownMenu.Item>
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
 
@@ -161,7 +164,9 @@ function Navbar() {
                     <DropdownMenu.Item asChild>
                       <NextLink href="/auth/usuariosroles">Asignación de roles</NextLink>
                     </DropdownMenu.Item>
-
+                    <DropdownMenu.Item asChild>
+                      <NextLink href="/auth/rolespermisos">Asignación de permisos</NextLink>
+                    </DropdownMenu.Item>
 
                     <DropdownMenu.Separator />
 

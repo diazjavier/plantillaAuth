@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from "react";
 import * as Popover from "@radix-ui/react-popover";
-import { TrashIcon, Cross2Icon } from "@radix-ui/react-icons";
+import {
+  TrashIcon,
+  Cross2Icon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
+import { Dialog, Button } from "@radix-ui/themes";
 import { MultiRelationProps, Relacion } from "@/interfaces/generics";
 
 interface GenericRelationProps {
@@ -18,8 +23,9 @@ export default function GenericMultiRelation({
   const relationSubtitle = relationData.relationSubtitle;
   const LISTA_ENTIDADES_A = relationData.listaA;
   const DISPONIBLES_ENTIDADES_B = relationData.listaB;
-  // const relaciones = relationData.listaRelacion;
 
+  // const relaciones = relationData.listaRelacion;
+  const [open, setOpen] = useState(false);
   const [seleccionadoAId, setSeleccionadoAId] = useState<string>("");
   const [relaciones, setRelaciones] = useState<Relacion[]>(
     relationData.listaRelacion,
@@ -72,7 +78,7 @@ export default function GenericMultiRelation({
       )
     )
       return;
-    setRelacionesActuales([
+    setRelaciones([
       {
         entidadAId: seleccionadoAId,
         entidadBId: idB,
@@ -80,7 +86,7 @@ export default function GenericMultiRelation({
         fechaCaducidad: "",
         isNew: true,
       },
-      ...relacionesActuales,
+      ...relaciones,
     ]);
     setBusquedaB("");
     setIsPopoverOpen(false);
@@ -88,24 +94,33 @@ export default function GenericMultiRelation({
 
   const eliminarRelacion = (id: string, idA: string, idB: string) => {
     if (id === "" || !id) {
-      setRelacionesActuales(
-        relacionesActuales.filter(
+      //   setRelacionesActuales(
+      //     relacionesActuales.filter(
+      //       (rel: any) => !(rel.entidadAId === idA && rel.entidadBId === idB),
+      //     ),
+      //   );
+      setRelaciones(
+        relaciones.filter(
           (rel: any) => !(rel.entidadAId === idA && rel.entidadBId === idB),
         ),
       );
     } else {
-      relationData.elimina?.(id);
+      if (relaciones.some((r) => r.isNew)) {
+        setOpen(true);
+      } else {
+        relationData.elimina?.(id);
+      }
+      // setRelacionesActuales(
+      //   relacionesActuales.filter(
+      //     (r) => !(r.entidadAId === seleccionadoAId && r.entidadBId === idB),
+      //   ),
+      // );
     }
-    // setRelacionesActuales(
-    //   relacionesActuales.filter(
-    //     (r) => !(r.entidadAId === seleccionadoAId && r.entidadBId === idB),
-    //   ),
-    // );
   };
 
   const guardarCambios = async () => {
     //    const itemSeleccionado = seleccionadoAId;
-    const relacionesAgregadas = relacionesActuales.filter((r) => r.isNew);
+    const relacionesAgregadas = relaciones.filter((r) => r.isNew);
     if (relacionesAgregadas.length > 0) {
       relationData.agrega?.(relacionesAgregadas);
     }
@@ -169,7 +184,7 @@ export default function GenericMultiRelation({
             <div className="flex-1 overflow-y-auto p-3 space-y-1  min-h-0 bg-white">
               {listaAFiltrada.map((doc) => {
                 const esActivo = doc.id.toString() === seleccionadoAId;
-                const tieneNuevos = relacionesActuales.some(
+                const tieneNuevos = relaciones.some(
                   (r) =>
                     r.entidadAId.toString() === doc.id.toString() && r.isNew,
                 );
@@ -184,7 +199,7 @@ export default function GenericMultiRelation({
                       setSeleccionadoAId(doc.id.toString());
                       setBusquedaB("");
                     }}
-                    className={`w-full text-left p-4 rounded-xl flex justify-between items-center transition-all ${
+                    className={`w-full text-left px-4 py-2 rounded-xl flex justify-between items-center transition-all ${
                       !esActivo
                         ? "bg-white border border-slate-200/80 shadow-md shadow-slate-100/50 scale-[1.01]"
                         : "bg-slate-200/40 border border-transparent"
@@ -262,7 +277,7 @@ export default function GenericMultiRelation({
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                         aria-label="Limpiar búsqueda"
                       >
-                        ✕
+                        <Cross2Icon className="w-4 h-4" />
                       </button>
                     )}
                   </div>
@@ -291,8 +306,11 @@ export default function GenericMultiRelation({
             {/* Listado de Entidades Relacionadas */}
             {/* <div className="space-y-4 p-5"> */}
             <div className="px-8 py-2  shadow-md  sticky top-0 bg-white z-10">
-              <h3 className="text-l font-bold tracking-tight text-[#04071A]">
-                {relationSubtitle} {activeDoc?.nombre}
+              <h3 className="text-l font-bold tracking-tight text-[#04071A] flex flex-row">
+                {relationSubtitle}{" "}
+                <p className="bg-blue-200 rounded px-2 mx-2">
+                  {activeDoc?.nombre}
+                </p>
               </h3>
             </div>
             <div className="flex-1 overflow-y-auto p-5 min-h-0">
@@ -305,7 +323,7 @@ export default function GenericMultiRelation({
                   {relacionesActuales.map((rel) => (
                     <div
                       key={rel.id?.toString() + "-" + rel.nombreB}
-                      className={`flex flex-row items-center justify-between p-2 rounded-xl border transition-all ${
+                      className={`flex flex-row items-center justify-between px-2 rounded-xl border transition-all ${
                         rel.isNew
                           ? "bg-amber-50/60 border-amber-300 shadow-sm shadow-amber-100/50"
                           : "bg-white border-slate-100 hover:border-slate-200"
@@ -358,6 +376,33 @@ export default function GenericMultiRelation({
           </button>
         </div>
       </div>
+
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Content maxWidth="450px">
+          <Dialog.Title>
+            {" "}
+            <div className="flex items-center gap-2">
+              <ExclamationTriangleIcon className="w-6 h-6 text-amber-500" />
+              <span>Hay operaciones pendientes</span>
+            </div>
+          </Dialog.Title>
+
+          <Dialog.Description size="2" mb="4">
+            Por favor finalice las operaciones pendientes antes de eliminar una
+            relación
+          </Dialog.Description>
+
+          <div className="flex justify-end">
+            <Button
+              variant="surface"
+              color="gray"
+              onClick={() => setOpen(false)}
+            >
+              Cerrar
+            </Button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Root>
     </div>
   );
 }

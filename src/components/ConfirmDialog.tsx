@@ -30,13 +30,13 @@ export default function ConfirmDialog({ confirmdialog, open }: GenericConfigDial
     <AlertDialog.Root open={open} onOpenChange={(open) => !open && onClose()}>
       <AlertDialog.Content
         maxWidth="450px"
-        className="!bg-[#042a57] !text-white border border-slate-700"
+        className="border border-slate-700"
       >
         <AlertDialog.Title className="text-lg font-bold">
           {title}
         </AlertDialog.Title>
 
-        <AlertDialog.Description size="2" className="mt-2 text-slate-300">
+        <AlertDialog.Description size="2" className="mt-2">
           {description}
         </AlertDialog.Description>
 

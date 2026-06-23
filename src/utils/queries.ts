@@ -115,5 +115,25 @@ export function getPermisosCustom() {
   return `select id, permiso, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from permisos;`;
 }
 
+export function getPermisosActivosMini() {
+  return `select id, permiso as nombre from permisos where fechafin is null order by permiso;`;
+}
+
+export function getRolesPermisos() {
+  return `select rp.id, rp.idrol, rp.idpermiso, p.permiso from rol_permiso rp inner join permisos p on rp.idpermiso = p.id inner join roles r on rp.idrol = r.id where rp.fechafin is null and p.fechafin is null and r.fechafin is null order by p.permiso;`;
+}
+
+export function inactivateRolPermiso(idRelacion: string) {
+  return `update rol_permiso set fechafin = now() where id = ${idRelacion} returning *;`;
+}
+
+export function creaRolPermiso(rels: RelacionMini[]) {
+  const valores = rels.map((rel: any) => `(${rel.entidadAId}, ${rel.entidadBId})`).join(", ");
+  console.log("Valores: ", valores);
+  return `insert into rol_permiso (idrol, idpermiso) values ${valores} returning *;`;
+}
+
+
+
 
 
