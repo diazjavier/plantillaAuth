@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { updateRol } from "@/utils/queries";
+import { updateUsuario } from "@/utils/queries";
 import { conn } from "@/utils/dbConnection";
+import bcrypt from "bcrypt";
 
 export async function PUT(
   request: Request,
@@ -9,10 +10,9 @@ export async function PUT(
   try {
     const { id } = await context.params;
     const data = await request.json();
-    const query = updateRol(id, data);
-    const result = await conn.query(query);
-    const updatedRol = result.rows[0];
-    return NextResponse.json(updatedRol, { status: 201 });
+    const result = await conn.query(updateUsuario(id, data));
+    const updatedUser = result.rows[0];
+    return NextResponse.json(updatedUser, { status: 201 });
   } catch (error) {
     console.error("Error en API activate:", error);
     return NextResponse.json(

@@ -46,7 +46,7 @@ function SignUpForm({ userData }: UsuarioFormProps) {
   const onSubmit = handleSubmit(async (data: User) => {
     if (isEdit) {
       // Edita un usuario existente
-      const response = await fetch(`/api/auth/register/${userData?.id}`, {
+      const response = await fetch(`/api/auth/usuarios/register/${userData?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ function SignUpForm({ userData }: UsuarioFormProps) {
       router.push("/auth/users2");
     } else {
       // Crea un nuevo usuario
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/auth/usuarios/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

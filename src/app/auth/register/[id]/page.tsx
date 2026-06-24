@@ -19,7 +19,7 @@ function RegisterPage({ params }: Props) {
   }
 
   async function getUsuario(id: string) {
-    const res = await fetch(`/api/auth/usuario/${id}`);
+    const res = await fetch(`/api/auth/usuarios/${id}`);
     if (!res.ok) return null;
     const resp = await res.json();
     if (resp.error || !resp.data) return null;

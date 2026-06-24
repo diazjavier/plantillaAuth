@@ -8,7 +8,8 @@ u.id
 , u.email 
 , u.createdat as fecharegistro
 , case when (u.fechafin is null) then true else false end as activo
-from usuarios u;`;
+from usuarios u
+order by u.username;`;
 }
 
 export function getUsuarios() {
@@ -66,7 +67,7 @@ export function updateRol(id: string, rol: RolProps) {
 }
 
 export function getRolesCustom() {
-  return `select id, rol, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from roles;`;
+  return `select id, rol, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from roles order by rol;`;
 }
 
 export function getRolesActivosMini() {
@@ -112,7 +113,7 @@ export function updatePermiso(id: string, permiso: PermisoProps) {
 }
 
 export function getPermisosCustom() {
-  return `select id, permiso, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from permisos;`;
+  return `select id, permiso, comentario, createdat as fecharegistro, case when (fechafin is null) then true else false end as activo from permisos order by permisos;`;
 }
 
 export function getPermisosActivosMini() {
@@ -129,7 +130,6 @@ export function inactivateRolPermiso(idRelacion: string) {
 
 export function creaRolPermiso(rels: RelacionMini[]) {
   const valores = rels.map((rel: any) => `(${rel.entidadAId}, ${rel.entidadBId})`).join(", ");
-  console.log("Valores: ", valores);
   return `insert into rol_permiso (idrol, idpermiso) values ${valores} returning *;`;
 }
 

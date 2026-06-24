@@ -68,7 +68,6 @@ export default function UsuariosRoles() {
     try {
       const res = await fetch("/api/auth/roles/permisos");
       const data = await res.json();
-      console.log("Data: ", data);
       const relacionesActivasData = data.data.map((item: any) => {
         return {
           id: item.id.toString(),
@@ -109,6 +108,7 @@ export default function UsuariosRoles() {
         },
       },
     );
+    console.log("Response Inactivate: ", response);
     const res = await response.json();
     if (response.status !== 200) {
       // Manejar el error de registro aquí, por ejemplo, mostrando un mensaje al usuario

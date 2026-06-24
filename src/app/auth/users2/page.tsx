@@ -92,7 +92,7 @@ export default function UsuariosPage() {
   };
 
   const activaUsuario = async (id: string) => {
-    const response = await fetch(`/api/auth/usuario/activate/${id}`, {
+    const response = await fetch(`/api/auth/usuarios/activate/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default function UsuariosPage() {
   };
 
   const inactivaUsuario = async (id: string) => {
-    const response = await fetch(`/api/auth/usuario/inactivate/${id}`, {
+    const response = await fetch(`/api/auth/usuarios/inactivate/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

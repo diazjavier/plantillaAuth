@@ -4,7 +4,7 @@ import { conn } from "@/utils/dbConnection";
 import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
-
+  try {
     const data = await request.json();
 
     const saltRounds = await bcrypt.genSalt(10);
@@ -15,4 +15,11 @@ export async function POST(request: Request) {
     const { password, ...newUser } = fullNewUser;
 
     return NextResponse.json(newUser, { status: 201 });
-};
+  } catch (error) {
+    console.error("Error en API activate:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
+}
